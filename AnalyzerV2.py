@@ -47,9 +47,39 @@ except ValueError:
     print("A result in your file is not a number")
     trades = []
 
-
+print(f"Loaded {len(trades)} trades")
 print(f"Win rate: {round(win_rate(trades), 2)}%")
 print(f"Average result: {round(average_r(trades), 2)}")
 print(f"Rules followed average result: {round(average_r_by_rules(trades, True), 2)}")
 print(f"Broken rules average result: {round(average_r_by_rules(trades, False), 2)}")
-print(f"Loaded {len(trades)} trades")
+
+
+#test
+two = [
+    {"result" : 2.0, "rules" : True},
+    {"result" : -1.0, "rules" : False},
+]
+
+wcases = [
+    ([], 0),
+    ([
+        {"result" : 2.0},
+        {"result" : -1.0},
+        ],50),
+    ([
+       {"result" : 2.0},
+       {"result" : 1.0},
+    ], 100),
+
+]
+for trades, expected in wcases:
+  assert win_rate(trades) == expected, f"win_rate failed for {trades}"
+cases = [
+    ([], 0),
+    ([
+         {"result" : 2},
+         {"result" : -1},
+    ], 0.5)
+]
+for trades, expected in cases:
+    assert average_r(trades) == expected, f"average_r failed for {trades}"
