@@ -9,6 +9,7 @@ def load_trades(filename):
             "date" : row["date"],
             "result" : float(row["result"]),
             "rules" : row["rules"] == "True",
+            "instrument" : row.get("instrument", "Unknown"),
             })
     return trades
 
@@ -46,10 +47,10 @@ def equity_curve(trades):
     curve = []
     for trade in trades:
         equity += trade["result"]
-        curve.append(equity)
+        curve.append(round(equity, 2))
     return curve
 
-#brakeven trades neither extend nor break a losing streak.
+#breakeven trades neither extend nor break a losing streak.
 def losing_streak(trades):
     streak = 0
     max_streak = 0
@@ -62,9 +63,18 @@ def losing_streak(trades):
             streak = 0
     return max_streak
 
+def average_r_by_instrument(trades, instrument):
+    results = []
+    for trade in trades:
+        if trade["instrument"] == instrument:
+            results.append(trade["result"])
+    if len(results) == 0:
+        return 0
+    return sum(results) / len(results)
+
 def main():
     try:
-        trades = load_trades("trades.csv")
+        trades = load_trades("journal.csv")
     except FileNotFoundError:
         print("Could not find that file. Check the name and folder")
         trades = []
